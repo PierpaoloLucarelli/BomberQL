@@ -1,6 +1,6 @@
 import time 
 
-BOMB_LIFE = 5 # time steps
+BOMB_LIFE = 8 # time steps
 
 class Player:
 	def __init__(self, pos):

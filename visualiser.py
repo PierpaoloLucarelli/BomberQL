@@ -20,7 +20,10 @@ class Visualiser(tk.Tk, object):
 
 		self.title = "Bomber QL"
 		self.geometry('{0}x{1}'.format(self.width*scale, self.height*scale))
-
+		self.explosionAV = None
+		self.explosionAH = None
+		self.explosionBV = None
+		self.explosionBH = None
 		self.build_grid(env)
 
 	def build_grid(self, env):
@@ -64,26 +67,51 @@ class Visualiser(tk.Tk, object):
 						fill='blue')
 
 	def draw_bombs(self, env):
+		# check efficiency
+		if(self.explosionAV):
+			self.canvas.delete(self.explosionAV)
+		if(self.explosionAH):
+			self.canvas.delete(self.explosionAH)
+		if(self.explosionBV):
+			self.canvas.delete(self.explosionBV)
+		if(self.explosionBH):
+			self.canvas.delete(self.explosionBH)
 		if(env.playerA.bomb_placed):
-			print(env.playerA.bomb_life)
-			if(env.playerA.bomb_life == 5):
+			if(env.playerA.bomb_life == 8):
 				self.bombA = self.canvas.create_oval(
 					env.playerA.bomb_pos[0]*self.scale, env.playerA.bomb_pos[1]*self.scale,
 					env.playerA.bomb_pos[0]*self.scale + self.scale, env.playerA.bomb_pos[1]*self.scale + self.scale,
 					fill='red')
 			elif(env.playerA.bomb_life == 0):
+				if(env.playerA.bomb_pos[0] % 2 == 0):
+					self.explosionAV = self.vertical_explosion(env.playerA)
+				if(env.playerA.bomb_pos[1] % 2 == 0):
+					self.explosionAH = self.horizontal_explosion(env.playerA)
 				self.canvas.delete(self.bombA)
 
 		if(env.playerB.bomb_placed):
-			if(env.playerB.bomb_life == 5):
+			if(env.playerB.bomb_life == 8):
 				self.bombB = self.canvas.create_oval(
 					env.playerB.bomb_pos[0]*self.scale, env.playerB.bomb_pos[1]*self.scale,
 					env.playerB.bomb_pos[0]*self.scale + self.scale, env.playerB.bomb_pos[1]*self.scale + self.scale,
 					fill='blue')
 			elif(env.playerB.bomb_life == 0):
+				if(env.playerB.bomb_pos[0] % 2 == 0):
+					self.explosionBV = self.vertical_explosion(env.playerB)
+				if(env.playerB.bomb_pos[1] % 2 == 0):
+					self.explosionBH = self.horizontal_explosion(env.playerB)
 				self.canvas.delete(self.bombB)
 
-
+	def vertical_explosion(self, player):
+		return self.canvas.create_rectangle(
+						player.bomb_pos[0]*self.scale, (player.bomb_pos[1]-1)*self.scale,
+						player.bomb_pos[0]*self.scale + self.scale, (player.bomb_pos[1]+1)*self.scale + self.scale,
+						fill="yellow")
+	def horizontal_explosion(self, player):
+		return self.canvas.create_rectangle(
+						(player.bomb_pos[0]-1)*self.scale, player.bomb_pos[1]*self.scale,
+						(player.bomb_pos[0]+1)*self.scale + self.scale, player.bomb_pos[1]*self.scale + self.scale,
+						fill="yellow")
 
 if __name__ == '__main__':
 	env = Game()

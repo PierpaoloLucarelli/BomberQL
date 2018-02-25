@@ -68,9 +68,24 @@ class Game():
 				print("explosion")
 				player.reset_bomb()
 
+
 	def check_death(self, player):
-		# print(distX)
-		# print(distY)
+		if(self.playerA.bomb_placed):
+			if(player.x == self.playerA.bomb_pos[0]):
+				if(abs(player.x - self.playerA.bomb_pos[0]) < 2):
+					return True
+			if(player.y == self.playerA.bomb_pos[1]):
+				if(abs(player.y - self.playerA.bomb_pos[1]) < 2):
+					return True
+		if(self.playerB.bomb_placed):
+			if(player.x == self.playerB.bomb_pos[0]):
+				if(abs(player.x - self.playerB.bomb_pos[0]) < 2):
+					return True
+			if(player.y == self.playerB.bomb_pos[1]):
+				if(abs(player.y - self.playerB.bomb_pos[1]) < 2):
+					return True
+		
+		return False
 
 
 
