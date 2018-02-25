@@ -26,8 +26,14 @@ class Game():
 
 
 	def step(self, actionA, actionB):
+		self.update_bomb(self.playerA)
+		self.update_bomb(self.playerB)
 		self.apply_action(actionA, self.playerA)
 		self.apply_action(actionB, self.playerB)
+		if(self.playerB.bomb_placed or self.playerA.bomb_placed):
+			self.check_death(self.playerA)
+			self.check_death(self.playerB)
+
 
 
 	def apply_action(self, action, player):
@@ -45,7 +51,7 @@ class Game():
 			if(player.x > 0):
 				base_action[0] -= 1
 		elif(action == 4): # place bomb
-			if(not player.bomb_placed):
+			if(player.has_bomb()):
 				player.place_bomb((player.x, player.y))
 		else:
 			print("action not valid")
@@ -53,6 +59,20 @@ class Game():
 			return
 		player.x += base_action[0]
 		player.y += base_action[1]
+
+	def update_bomb(self, player):
+		if(player.bomb_placed):
+			if(player.bomb_life > 0):
+				player.bomb_life -= 1
+			else:
+				print("explosion")
+				player.reset_bomb()
+
+	def check_death(self, player):
+		# print(distX)
+		# print(distY)
+
+
 
 
 

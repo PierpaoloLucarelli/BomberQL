@@ -65,15 +65,24 @@ class Visualiser(tk.Tk, object):
 
 	def draw_bombs(self, env):
 		if(env.playerA.bomb_placed):
-			self.bombA = self.canvas.create_oval(
-				env.playerA.bomb_pos[0]*self.scale, env.playerA.bomb_pos[1]*self.scale,
-				env.playerA.bomb_pos[0]*self.scale + self.scale, env.playerA.bomb_pos[1]*self.scale + self.scale,
-				fill='red')
+			print(env.playerA.bomb_life)
+			if(env.playerA.bomb_life == 5):
+				self.bombA = self.canvas.create_oval(
+					env.playerA.bomb_pos[0]*self.scale, env.playerA.bomb_pos[1]*self.scale,
+					env.playerA.bomb_pos[0]*self.scale + self.scale, env.playerA.bomb_pos[1]*self.scale + self.scale,
+					fill='red')
+			elif(env.playerA.bomb_life == 0):
+				self.canvas.delete(self.bombA)
+
 		if(env.playerB.bomb_placed):
-			self.bombA = self.canvas.create_oval(
-				env.playerB.bomb_pos[0]*self.scale, env.playerB.bomb_pos[1]*self.scale,
-				env.playerB.bomb_pos[0]*self.scale + self.scale, env.playerB.bomb_pos[1]*self.scale + self.scale,
-				fill='blue')
+			if(env.playerB.bomb_life == 5):
+				self.bombB = self.canvas.create_oval(
+					env.playerB.bomb_pos[0]*self.scale, env.playerB.bomb_pos[1]*self.scale,
+					env.playerB.bomb_pos[0]*self.scale + self.scale, env.playerB.bomb_pos[1]*self.scale + self.scale,
+					fill='blue')
+			elif(env.playerB.bomb_life == 0):
+				self.canvas.delete(self.bombB)
+
 
 
 if __name__ == '__main__':
@@ -82,3 +91,24 @@ if __name__ == '__main__':
 	for i in range(100):
 		env.step(random.randint(0,4),random.randint(0,4))
 		vis.update_canvas(env)
+
+	# env.step(4,1)
+	# vis.update_canvas(env)
+	# env.step(1,1)
+	# vis.update_canvas(env)
+	# env.step(1,1)
+	# vis.update_canvas(env)
+	# env.step(1,1)
+	# vis.update_canvas(env)
+	# env.step(1,1)
+	# vis.update_canvas(env)
+	# env.step(1,1)
+	# vis.update_canvas(env)
+	# env.step(1,1)
+	# vis.update_canvas(env)
+	# env.step(2,1)
+	# vis.update_canvas(env)
+	# env.step(2,1)
+	# vis.update_canvas(env)
+	# env.step(2,1)
+	# vis.update_canvas(env)
