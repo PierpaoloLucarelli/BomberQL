@@ -36,6 +36,7 @@ class Game():
 
 
 
+
 	def apply_action(self, action, player):
 		base_action = np.array([0,0])
 		if action == 0: # up
@@ -70,19 +71,23 @@ class Game():
 
 
 	def check_death(self, player):
-		if(self.playerA.bomb_placed):
+		if(self.playerA.bomb_placed and self.playerA.bomb_life == 0):
 			if(player.x == self.playerA.bomb_pos[0]):
-				if(abs(player.x - self.playerA.bomb_pos[0]) < 2):
-					return True
-			if(player.y == self.playerA.bomb_pos[1]):
 				if(abs(player.y - self.playerA.bomb_pos[1]) < 2):
+					print("ded")
 					return True
-		if(self.playerB.bomb_placed):
+			elif(player.y == self.playerA.bomb_pos[1]):
+				if(abs(player.x - self.playerA.bomb_pos[0]) < 2):
+					print("ded")
+					return True
+		if(self.playerB.bomb_placed and self.playerB.bomb_life == 0):
 			if(player.x == self.playerB.bomb_pos[0]):
-				if(abs(player.x - self.playerB.bomb_pos[0]) < 2):
-					return True
-			if(player.y == self.playerB.bomb_pos[1]):
 				if(abs(player.y - self.playerB.bomb_pos[1]) < 2):
+					print("ded")
+					return True
+			elif(player.y == self.playerB.bomb_pos[1]):
+				if(abs(player.x - self.playerB.bomb_pos[0]) < 2):
+					print("ded")
 					return True
 		
 		return False
