@@ -44,6 +44,9 @@ class Game():
 		elif(action == 3): # left
 			if(player.x > 0):
 				base_action[0] -= 1
+		elif(action == 4): # place bomb
+			if(not player.bomb_placed):
+				player.place_bomb((player.x, player.y))
 		else:
 			print("action not valid")
 		if (player.x + base_action[0]) % 2 != 0 and (player.y + base_action[1]) % 2 != 0:

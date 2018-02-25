@@ -47,6 +47,7 @@ class Visualiser(tk.Tk, object):
 		self.canvas.delete(self.playerB)
 
 		self.draw_players(env)
+		self.draw_bombs(env)
 		self.update()
 
 	def draw_players(self, env):
@@ -62,10 +63,22 @@ class Visualiser(tk.Tk, object):
 						env.playerB.x*self.scale + self.scale, env.playerB.y*self.scale + self.scale,
 						fill='blue')
 
+	def draw_bombs(self, env):
+		if(env.playerA.bomb_placed):
+			self.bombA = self.canvas.create_oval(
+				env.playerA.bomb_pos[0]*self.scale, env.playerA.bomb_pos[1]*self.scale,
+				env.playerA.bomb_pos[0]*self.scale + self.scale, env.playerA.bomb_pos[1]*self.scale + self.scale,
+				fill='red')
+		if(env.playerB.bomb_placed):
+			self.bombA = self.canvas.create_oval(
+				env.playerB.bomb_pos[0]*self.scale, env.playerB.bomb_pos[1]*self.scale,
+				env.playerB.bomb_pos[0]*self.scale + self.scale, env.playerB.bomb_pos[1]*self.scale + self.scale,
+				fill='blue')
+
 
 if __name__ == '__main__':
 	env = Game()
 	vis = Visualiser(env, 80)
 	for i in range(100):
-		env.step(random.randint(0,3),random.randint(0,3))
+		env.step(random.randint(0,4),random.randint(0,4))
 		vis.update_canvas(env)
