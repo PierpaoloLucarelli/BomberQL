@@ -30,11 +30,15 @@ class Game():
 		self.update_bomb(self.playerB)
 		self.apply_action(actionA, self.playerA)
 		self.apply_action(actionB, self.playerB)
+		a_death = False
+		b_death = False
 		if(self.playerB.bomb_placed or self.playerA.bomb_placed):
-			self.check_death(self.playerA)
-			self.check_death(self.playerB)
+			a_death = self.check_death(self.playerA)
+			b_death = self.check_death(self.playerB)
+		r = self.reward(a_death, b_death)
 		state = self.game_to_state()
-		print(state)
+		# print(state)
+		# print(r)
 
 
 	def apply_action(self, action, player):
@@ -82,20 +86,32 @@ class Game():
 			state.append(self.playerB.bomb_pos[1])
 		return state
 
+	def reward(self, a_death, b_death):
+		if(a_death):
+			return -1
+		elif(b_death):
+			return 1
+		else:
+			return 0
+
 	def check_death(self, player):
 		if(self.playerA.bomb_placed and self.playerA.bomb_life == 0):
 			if(player.x == self.playerA.bomb_pos[0]):
 				if(abs(player.y - self.playerA.bomb_pos[1]) < 2):
+					print('player A ded')
 					return True
 			elif(player.y == self.playerA.bomb_pos[1]):
 				if(abs(player.x - self.playerA.bomb_pos[0]) < 2):
+					print('player A ded')
 					return True
 		if(self.playerB.bomb_placed and self.playerB.bomb_life == 0):
 			if(player.x == self.playerB.bomb_pos[0]):
 				if(abs(player.y - self.playerB.bomb_pos[1]) < 2):
+					print('player B ded')
 					return True
 			elif(player.y == self.playerB.bomb_pos[1]):
 				if(abs(player.x - self.playerB.bomb_pos[0]) < 2):
+					print('player B ded')
 					return True
 		
 		return False
