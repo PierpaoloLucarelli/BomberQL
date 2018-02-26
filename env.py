@@ -14,7 +14,6 @@ class Game():
 		self.h = HEIGHT
 		self.actions = ['u','r','d','l','b']
 		self.n_actions = len(self.actions)
-		self.grid = np.array((WIDTH,HEIGHT))
 		self.playerA = Player((0,0))
 		self.playerB = Player((WIDTH-1, HEIGHT-1))
 
@@ -100,23 +99,21 @@ class Game():
 		if(self.playerA.bomb_placed and self.playerA.bomb_life == 0):
 			if(player.x == self.playerA.bomb_pos[0]):
 				if(abs(player.y - self.playerA.bomb_pos[1]) < 2):
-					print('player A ded')
 					return True
 			elif(player.y == self.playerA.bomb_pos[1]):
 				if(abs(player.x - self.playerA.bomb_pos[0]) < 2):
-					print('player A ded')
 					return True
 		if(self.playerB.bomb_placed and self.playerB.bomb_life == 0):
 			if(player.x == self.playerB.bomb_pos[0]):
 				if(abs(player.y - self.playerB.bomb_pos[1]) < 2):
-					print('player B ded')
 					return True
 			elif(player.y == self.playerB.bomb_pos[1]):
 				if(abs(player.x - self.playerB.bomb_pos[0]) < 2):
-					print('player B ded')
 					return True
 		
 		return False
+
+
 
 
 

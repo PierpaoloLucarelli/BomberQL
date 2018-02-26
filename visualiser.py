@@ -24,6 +24,8 @@ class Visualiser(tk.Tk, object):
 		self.explosionAH = None
 		self.explosionBV = None
 		self.explosionBH = None
+		self.bombA = None
+		self.bombB = None
 		self.build_grid(env)
 
 	def build_grid(self, env):
@@ -48,7 +50,6 @@ class Visualiser(tk.Tk, object):
 		time.sleep(0.2)
 		self.canvas.delete(self.playerA)
 		self.canvas.delete(self.playerB)
-
 		self.draw_players(env)
 		self.draw_bombs(env)
 		self.update()
@@ -68,14 +69,10 @@ class Visualiser(tk.Tk, object):
 
 	def draw_bombs(self, env):
 		# check efficiency
-		if(self.explosionAV):
-			self.canvas.delete(self.explosionAV)
-		if(self.explosionAH):
-			self.canvas.delete(self.explosionAH)
-		if(self.explosionBV):
-			self.canvas.delete(self.explosionBV)
-		if(self.explosionBH):
-			self.canvas.delete(self.explosionBH)
+		self.canvas.delete(self.explosionAV)
+		self.canvas.delete(self.explosionAH)
+		self.canvas.delete(self.explosionBV)
+		self.canvas.delete(self.explosionBH)
 		if(env.playerA.bomb_placed):
 			if(env.playerA.bomb_life == 8):
 				self.bombA = self.canvas.create_oval(
@@ -112,6 +109,19 @@ class Visualiser(tk.Tk, object):
 						(player.bomb_pos[0]-1)*self.scale, player.bomb_pos[1]*self.scale,
 						(player.bomb_pos[0]+1)*self.scale + self.scale, player.bomb_pos[1]*self.scale + self.scale,
 						fill="yellow")
+	def reset(self):
+		self.canvas.delete(self.explosionAV)
+		self.canvas.delete(self.explosionAH)
+		self.canvas.delete(self.explosionBV)
+		self.canvas.delete(self.explosionBH)
+		self.canvas.delete(self.bombA)
+		self.canvas.delete(self.bombB)
+		self.explosionAV = None
+		self.explosionAH = None
+		self.explosionBV = None
+		self.explosionBH = None
+		self.bombA = None
+		self.bombB = None
 
 if __name__ == '__main__':
 	env = Game()
