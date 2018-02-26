@@ -20,8 +20,8 @@ class Game():
 
 	def reset(self):
 		self.playerA = Player((0,0))
-		self.playerB = Player(WIDTH-1, HEIGHT-1)
-		# return a board to state
+		self.playerB = Player((WIDTH-1, HEIGHT-1))
+		return self.game_to_state()
 
 
 
@@ -37,8 +37,10 @@ class Game():
 			b_death = self.check_death(self.playerB)
 		r = self.reward(a_death, b_death)
 		state = self.game_to_state()
-		# print(state)
-		# print(r)
+		done = False
+		if(a_death or b_death):
+			done = True
+		return state, r, done
 
 
 	def apply_action(self, action, player):
