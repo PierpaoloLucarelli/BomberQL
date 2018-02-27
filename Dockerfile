@@ -1,6 +1,6 @@
 from python:2
 
-ADD . /
+ADD . /bomberQL
 
 RUN pip install numpy scipy pandas
 
