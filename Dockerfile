@@ -4,4 +4,4 @@ ADD . /bomberQL
 
 RUN pip install numpy scipy pandas
 
-CMD [ "python", "-u",  "./main.py" ]
+CMD [ "python", "-u",  "./bomberQL/main.py" ]
