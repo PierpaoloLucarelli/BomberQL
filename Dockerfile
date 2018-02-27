@@ -1,7 +1,7 @@
-from Python:2
+from python:2
 
 ADD . /
 
-RUN pip install numpy scipy
+RUN pip install numpy scipy pandas
 
-CMD [ "python", "./main.py" ]
+CMD [ "python", "-u",  "./main.py" ]

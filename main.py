@@ -64,5 +64,5 @@ def run_optimal():
 
 if __name__ == '__main__':
 	env = Game()
-	# test()
-	run_optimal()
+	test()
+	# run_optimal()
