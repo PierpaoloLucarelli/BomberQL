@@ -1,5 +1,6 @@
 import numpy as np
 import pandas as pd
+from pandas.util.testing import assert_frame_equal
 import cPickle as pickle
 
 class QLearn:
@@ -64,8 +65,20 @@ class QLearn:
 					name=state,
 				)
 			)
-	def save_Qtable(self):
-		self.q_table.to_pickle("actions")
 
-	def load_Qtable(self):
-		self.q_table = pd.read_pickle("actions")
+	def check_convergence(self, filename):
+		try:
+			data = pd.read_pickle(filename)
+			return assert_frame_equal(data, self.q_table, check_dtype=False)
+		except AssertionError:
+			print("Not Converged")
+			print("number of old states: " + str(len(data)))
+			print("number of new states: " + str(len(self.q_table)))
+			return False
+
+
+	def save_Qtable(self, filename):
+		self.q_table.to_pickle(filename)
+
+	def load_Qtable(self, filename):
+		self.q_table = pd.read_pickle(filename)
