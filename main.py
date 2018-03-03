@@ -5,7 +5,7 @@ from randomplayer import *
 from ql import QLearn
 
 VIS = False
-N_EPISODES = 5000
+N_EPISODES = 1000
 
 def test(cont=False, filename=None):
 	numActions = env.n_actions
@@ -78,7 +78,7 @@ def testB(cont=False, filename=None):
 	# end of game
 	print "My program took", time.time() - start_time, "to run"
 	print('game over')
-	playerA.save_Qtable("actions")
+	# playerA.save_Qtable("actions")
 	playerB.save_Qtable("actionsB")
 
 
@@ -127,7 +127,7 @@ def run_optimalB():
 
 if __name__ == '__main__':
 	env = Game()
-	# testB(cont=True, filename="actions")
+	# testB()
 	# test(cont=True, filename="actions")
-	run_optimal()
-	# run_optimalB()
+	# run_optimal()
+	run_optimalB()
