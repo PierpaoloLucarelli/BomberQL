@@ -5,7 +5,7 @@ from randomplayer import *
 from ql import QLearn
 
 VIS = False
-N_EPISODES = 1000
+N_EPISODES = 5000
 
 def test(cont=False, filename=None):
 	numActions = env.n_actions
@@ -44,12 +44,13 @@ def test(cont=False, filename=None):
 	playerA.save_Qtable("actions")
 	print(playerA.check_convergence("old_actions"))
 
-def testB(cont=False, filename=None):
+def testB(cont=False, filenames=None):
 	numActions = env.n_actions
-	playerA = QLearn(actions=list(range(numActions)))
+	playerA = QLearn(actions=list(range(numActions)), reward_decay=0.7)
+	playerB = QLearn(actions=list(range(numActions)), reward_decay=0.7)
 	if(cont):
-		playerA.load_Qtable(filename)
-	playerB = QLearn(actions=list(range(numActions)))
+		playerA.load_Qtable(filenames[0])
+		playerB.load_Qtable(filenames[1])
 	start_time = time.time()
 	for episode in range(N_EPISODES):
 		# initial observation
@@ -78,8 +79,9 @@ def testB(cont=False, filename=None):
 	# end of game
 	print "My program took", time.time() - start_time, "to run"
 	print('game over')
-	# playerA.save_Qtable("actions")
+	playerA.save_Qtable("actions")
 	playerB.save_Qtable("actionsB")
+	print(playerA.check_convergence("old_actions"))
 
 
 def run_optimal():
@@ -128,6 +130,6 @@ def run_optimalB():
 if __name__ == '__main__':
 	env = Game()
 	# testB()
-	# test(cont=True, filename="actions")
+	# testB(cont=True, filenames=("actions", "actionsB"))
 	# run_optimal()
 	run_optimalB()
