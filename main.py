@@ -3,11 +3,18 @@ import time
 from visualiser import Visualiser
 from randomplayer import *
 from ql import QLearn
+import matplotlib as mpl
+mpl.use('TkAgg')
+import matplotlib.pyplot as plt
 
 VIS = False
-N_EPISODES = 5000
+N_EPISODES = 500
 
 def test(cont=False, filename=None):
+
+	reward_a = np.zeros(N_EPISODES)
+	total_a = 0
+
 	numActions = env.n_actions
 	playerA = QLearn(actions=list(range(numActions)), reward_decay=0.7)
 	if(cont):
@@ -29,6 +36,7 @@ def test(cont=False, filename=None):
 			# RL take action and get next observation and reward
 			observation_, reward, done = env.step(actionA, actionB)
 			#print(observation_)
+			total_a += reward
 
 			# RL learn from this transition
 			playerA.learn(str(observation), actionA, reward, str(observation_), done)
@@ -38,6 +46,13 @@ def test(cont=False, filename=None):
 			# break while loop when end of this episode
 			if done:
 				break
+		reward_a[episode] = total_a
+	plt.plot(reward_a)
+	plt.ylabel('Cummulative reward')
+	plt.xlabel('Episode')
+	plt.show()
+
+
 	# end of game
 	print "My program took", time.time() - start_time, "to run"
 	print('game over')
@@ -50,6 +65,7 @@ def testB(cont=False, filenames=None):
 	playerB = QLearn(actions=list(range(numActions)), reward_decay=0.7)
 	if(cont):
 		playerA.load_Qtable(filenames[0])
+		playerA.save_Qtable("old_actions")
 		playerB.load_Qtable(filenames[1])
 	start_time = time.time()
 	for episode in range(N_EPISODES):
@@ -129,7 +145,7 @@ def run_optimalB():
 
 if __name__ == '__main__':
 	env = Game()
-	# testB()
+	test()
 	# testB(cont=True, filenames=("actions", "actionsB"))
 	# run_optimal()
-	run_optimalB()
+	# run_optimalB()
