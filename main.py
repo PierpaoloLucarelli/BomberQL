@@ -77,7 +77,7 @@ def testB(cont=False, filenames=None):
 		while True:
 			# RL choose action based on observation
 			actionA = playerA.choose_action(str(observation))
-			actionB = playerB.choose_action(str(observation))
+			actionB = playerB.choose_action(str(observation), list(range(numActions)))
 
 			# RL take action and get next observation and reward
 			observation_, reward, done = env.step(actionA, actionB)
@@ -142,6 +142,7 @@ def run_optimalB():
 				break
 	print("Games won: " + str(env.win_count))
 	vis.destroy()
+
 
 if __name__ == '__main__':
 	env = Game()
