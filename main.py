@@ -6,10 +6,13 @@ from ql import QLearn
 import matplotlib as mpl
 mpl.use('TkAgg')
 import matplotlib.pyplot as plt
+from minimax_ql import MinimaxQPlayer
+from dqn import DeepQNetwork
 
 VIS = False
-N_EPISODES = 500
+N_EPISODES = 10000
 
+# test QL vs Random
 def test(cont=False, filename=None):
 
 	reward_a = np.zeros(N_EPISODES)
@@ -40,6 +43,52 @@ def test(cont=False, filename=None):
 
 			# RL learn from this transition
 			playerA.learn(str(observation), actionA, reward, str(observation_), done)
+			# swap observation
+			observation = observation_
+
+			# break while loop when end of this episode
+			if done:
+				break
+		reward_a[episode] = total_a
+	plt.plot(reward_a)
+	plt.ylabel('Cummulative reward')
+	plt.xlabel('Episode')
+	plt.show()
+
+# test minmaxQL vs Random
+def test_minmax(cont=False, filename=None):
+
+	reward_a = np.zeros(N_EPISODES)
+	total_a = 0
+
+	numActions = env.n_actions
+	drawProbability = 0.1
+	decay = 10**(-2. / N_EPISODES * 0.05)
+
+	playerA = MinimaxQPlayer(numActions, numActions, decay=decay, expl=0.01, gamma=1-drawProbability)
+	if(cont):
+		playerA.load_Qtable(filename)
+		playerA.save_Qtable("old_actions")
+	playerB = RandomPlayer(numActions-1)
+	start_time = time.time()
+	for episode in range(N_EPISODES):
+		# initial observation
+		observation = env.reset()
+		# print(str(episode))
+		if(episode % 500 == 0):
+			print(str(float(episode) / N_EPISODES * 100) + "%")
+		while True:
+			# RL choose action based on observation
+			actionA = playerA.choose_action(str(observation))
+			actionB = playerB.choose_action(str(observation))
+
+			# RL take action and get next observation and reward
+			observation_, reward, done = env.step(actionA, actionB)
+			#print(observation_)
+			total_a += reward
+
+			# RL learn from this transition
+			playerA.learn(str(observation), str(observation_), [actionA,actionB], reward)
 			# swap observation
 			observation = observation_
 
@@ -85,7 +134,7 @@ def testB(cont=False, filenames=None):
 
 			# RL learn from this transition
 			playerA.learn(str(observation), actionA, reward, str(observation_), done)
-			playerB.learn(str(observation), actionB, -reward, str(observation_), done)
+			# playerB.learn(str(observation), actionB, -reward, str(observation_), done)
 			# swap observation
 			observation = observation_
 
@@ -143,10 +192,61 @@ def run_optimalB():
 	print("Games won: " + str(env.win_count))
 	vis.destroy()
 
+def test_DQL():
+	reward_a = np.zeros(N_EPISODES)
+	total_a = 0
+
+	step = 0
+	numActions = env.n_actions
+	playerA = DeepQNetwork(numActions, env.n_features,
+					  learning_rate=0.01,
+					  reward_decay=0.9,
+					  e_greedy=0.9,
+					  replace_target_iter=200,
+					  memory_size=2000,
+					  # output_graph=True
+					  )
+	playerB = RandomPlayer(numActions-1)
+	for episode in range(N_EPISODES):
+		# initial observation
+		observation = env.reset()
+		if(episode % 500 == 0):
+			print(str(float(episode) / N_EPISODES * 100) + "%")
+		while True:
+			# RL choose action based on observation
+			# print(observation)
+			actionA = playerA.choose_action(np.array(observation))
+			actionB = playerB.choose_action(str(observation))
+			# RL take action and get next observation and reward
+			observation_, reward, done = env.step(actionA, actionB)
+			total_a += reward
+			playerA.store_transition(observation, actionA, reward, observation_)
+
+			if (step > 200) and (step % 5 == 0):
+				playerA.learn()
+
+			# swap observation
+			observation = observation_
+
+			# break while loop when end of this episode
+			if done:
+				break
+			step += 1
+		reward_a[episode] = total_a
+	plt.plot(reward_a)
+	plt.ylabel('Cummulative reward')
+	plt.xlabel('Episode')
+	plt.show()
+
+	# end of game
+	print('game over')
+
 
 if __name__ == '__main__':
 	env = Game()
-	test()
+	# test()
+	# test_minmax()
+	test_DQL()
 	# testB(cont=True, filenames=("actions", "actionsB"))
 	# run_optimal()
 	# run_optimalB()

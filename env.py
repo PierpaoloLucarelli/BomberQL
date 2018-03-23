@@ -14,6 +14,7 @@ class Game():
 		self.h = HEIGHT
 		self.actions = ['u','r','d','l','b']
 		self.n_actions = len(self.actions)
+		self.n_features = 8
 		self.playerA = Player((0,0))
 		self.playerB = Player((WIDTH-1, HEIGHT-1))
 
@@ -82,9 +83,16 @@ class Game():
 		if(self.playerA.bomb_placed):
 			state.append(self.playerA.bomb_pos[0])
 			state.append(self.playerA.bomb_pos[1])
+		else:
+			state.append(0)
+			state.append(0)
 		if(self.playerB.bomb_placed):
 			state.append(self.playerB.bomb_pos[0])
 			state.append(self.playerB.bomb_pos[1])
+		else:
+			state.append(0)
+			state.append(0)
+
 		return state
 
 	def reward(self, a_death, b_death):

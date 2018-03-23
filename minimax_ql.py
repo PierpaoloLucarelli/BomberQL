@@ -16,7 +16,7 @@ class MinimaxQPlayer:
 		self.numActionsB = numActionsB
 		self.learning = True
 
-	def chooseAction(self, state, restrict=None):
+	def choose_action(self, state, restrict=None):
 		self.check_state_exists(state)
 		if np.random.rand() < self.expl:
 			action = np.random.randint(self.numActionsA)
@@ -32,7 +32,7 @@ class MinimaxQPlayer:
 			action += 1
 		return action	
 
-	def getReward(self, initialState, finalState, actions, reward, restrictActions=None):
+	def learn(self, initialState, finalState, actions, reward, restrictActions=None):
 		self.check_state_exists(finalState)
 		if not self.learning:
 			return
