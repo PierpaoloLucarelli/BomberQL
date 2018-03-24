@@ -42,6 +42,9 @@ class MinimaxQPlayer:
 		self.V[initialState] = self.updatePolicy(initialState)  # EQUIVALENT TO : min(np.sum(self.Q[initialState].T * self.pi[initialState], axis=1))
 		self.alpha *= self.decay
 
+	def set_greedy(self, val):
+		self.expl = val
+
 	def updatePolicy(self, state, retry=False):
 		c = np.zeros(self.numActionsA + 1)
 		c[0] = -1

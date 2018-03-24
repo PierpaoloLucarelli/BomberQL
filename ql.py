@@ -55,6 +55,10 @@ class QLearn:
 			q_target = r  # next state is terminal
 		self.q_table.ix[s, a] += self.lr * (q_target - q_predict)
 
+	def set_greedy(self, val):
+		self.epsilon = val
+
+
 	def check_state_exist(self, state):
 		if state not in self.q_table.index:
 			# append new state to q table

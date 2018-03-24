@@ -10,7 +10,7 @@ from minimax_ql import MinimaxQPlayer
 from dqn import DeepQNetwork
 
 VIS = False
-N_EPISODES = 10000
+N_EPISODES = 1000
 
 # test QL vs Random
 def test(cont=False, filename=None):
@@ -20,10 +20,11 @@ def test(cont=False, filename=None):
 
 	numActions = env.n_actions
 	playerA = QLearn(actions=list(range(numActions)), reward_decay=0.7)
+	playerB = QLearn(actions=list(range(numActions)), reward_decay=0.7)
 	if(cont):
 		playerA.load_Qtable(filename)
 		playerA.save_Qtable("old_actions")
-	playerB = RandomPlayer(numActions-1)
+	playerB.load_Qtable('actions_copy')
 	start_time = time.time()
 	for episode in range(N_EPISODES):
 		# initial observation
@@ -50,10 +51,12 @@ def test(cont=False, filename=None):
 			if done:
 				break
 		reward_a[episode] = total_a
-	plt.plot(reward_a)
-	plt.ylabel('Cummulative reward')
-	plt.xlabel('Episode')
-	plt.show()
+	# plt.plot(reward_a)
+	# plt.ylabel('Cummulative reward')
+	# plt.xlabel('Episode')
+	# plt.show()
+	# playerA.save_Qtable("qlactions")
+	return playerA
 
 # test minmaxQL vs Random
 def test_minmax(cont=False, filename=None):
@@ -69,7 +72,8 @@ def test_minmax(cont=False, filename=None):
 	if(cont):
 		playerA.load_Qtable(filename)
 		playerA.save_Qtable("old_actions")
-	playerB = RandomPlayer(numActions-1)
+	playerB = QLearn(actions=list(range(numActions)), reward_decay=0.7)
+	playerB.load_Qtable("qlactions")
 	start_time = time.time()
 	for episode in range(N_EPISODES):
 		# initial observation
@@ -96,10 +100,11 @@ def test_minmax(cont=False, filename=None):
 			if done:
 				break
 		reward_a[episode] = total_a
-	plt.plot(reward_a)
-	plt.ylabel('Cummulative reward')
-	plt.xlabel('Episode')
-	plt.show()
+	# plt.plot(reward_a)
+	# plt.ylabel('Cummulative reward')
+	# plt.xlabel('Episode')
+	# plt.show()
+	return playerA
 
 
 	# end of game
@@ -241,12 +246,46 @@ def test_DQL():
 	# end of game
 	print('game over')
 
+def ql_vs_minmax(ql_p, min_p):
+	print("ql vs minmax ql")
+	vis = Visualiser(env, 80)
+	numActions = env.n_actions
+	start_time = time.time()
+	# no explore
+
+	for episode in range(N_EPISODES):
+		# initial observation
+		observation = env.reset()
+		# print(str(episode))
+		if(episode > N_EPISODES - 100):
+			vis.update_canvas(env)
+		while True:
+			# RL choose action based on observation
+			actionA = ql_p.choose_action(str(observation))
+			actionB = min_p.choose_action(str(observation))
+
+			# RL take action and get next observation and reward
+			observation_, reward, done = env.step(actionA, actionB)
+			#print(observation_)
+			ql_p.learn(str(observation), actionA, reward, str(observation_), done)
+			min_p.learn(str(observation), str(observation_), [actionA,actionB], -reward)
+			
+			observation = observation_
+			if(episode > N_EPISODES - 100):
+				vis.update_canvas(env)
+			if done:
+				vis.reset()
+				break
+
+
 
 if __name__ == '__main__':
 	env = Game()
-	# test()
+	ql_p = test()
+	min_p = test_minmax()
+	ql_vs_minmax(ql_p, min_p)
 	# test_minmax()
-	test_DQL()
+	# test_DQL()
 	# testB(cont=True, filenames=("actions", "actionsB"))
 	# run_optimal()
 	# run_optimalB()
