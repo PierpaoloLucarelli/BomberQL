@@ -1,5 +1,6 @@
 import numpy as np
 from scipy.optimize import linprog
+import pickle
 
 
 class MinimaxQPlayer:
@@ -78,6 +79,22 @@ class MinimaxQPlayer:
 	def policyForState(self, state):
 		for i in range(self.numActionsA):
 			print("Actions %d : %f" % (i, self.pi[state][i]))
+
+	def save_Qtable(self, filename):
+		with open('saved_players/'+ filename + '_Q.pkl', 'wb') as f:
+			pickle.dump(self.Q, f, pickle.HIGHEST_PROTOCOL)
+		with open('saved_players/'+ filename + '_V.pkl', 'wb') as f:
+			pickle.dump(self.V, f, pickle.HIGHEST_PROTOCOL)
+		with open('saved_players/'+ filename + '_pi.pkl', 'wb') as f:
+			pickle.dump(self.pi, f, pickle.HIGHEST_PROTOCOL)
+
+	def load_Qtable(self, filename):
+		with open('saved_players/' + filename + '_Q.pkl', 'rb') as f:
+			self.Q = pickle.load(f)
+		with open('saved_players/' + filename + '_V.pkl', 'rb') as f:
+			self.V = pickle.load(f)
+		with open('saved_players/' + filename + '_pi.pkl', 'rb') as f:
+			self.pi = pickle.load(f)
 
 
 
