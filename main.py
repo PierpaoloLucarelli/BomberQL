@@ -8,7 +8,6 @@ from rps import RockPaperScissors
 mpl.use('TkAgg')
 import matplotlib.pyplot as plt
 from minimax_ql import MinimaxQPlayer
-from dqn import DeepQNetwork
 import gym
 
 VIS = False
@@ -53,11 +52,6 @@ def test(cont=False, filename=None):
 			# break while loop when end of this episode
 			if done:
 				break
-		# reward_a[episode] = total_a
-	# plt.plot(reward_a)
-	# plt.ylabel('Cummulative reward')
-	# plt.xlabel('Episode')
-	# plt.show()
 	playerB.save_Qtable("saved_players/QR_base");
 	playerA.save_Qtable("saved_players/QR")
 	return playerA
@@ -105,21 +99,9 @@ def test_minmax(cont=False, filename=None):
 			# break while loop when end of this episode
 			if done:
 				break
-		# reward_a[episode] = total_a
-	# plt.plot(reward_a)
-	# plt.ylabel('Cummulative reward')
-	# plt.xlabel('Episode')
-	# plt.show()
 	playerA.save_Qtable("saved_players/MR_base");
 	playerB.save_Qtable("MR")
 	return playerB
-
-
-	# end of game
-	# print "My program took", time.time() - start_time, "to run"
-	# print('game over')
-	# playerA.save_Qtable("actions")
-	# print(playerA.check_convergence("old_actions"))
 
 def run_optimal():
 	vis = Visualiser(env, 80)
@@ -168,54 +150,6 @@ def run_optimalB():
 	print("Games won: " + str(env.win_count))
 	vis.destroy()
 
-def test_DQL():
-	reward_a = np.zeros(N_EPISODES)
-	total_a = 0
-
-	step = 0
-	numActions = env.n_actions
-	playerA = DeepQNetwork(numActions, env.n_features,
-					  learning_rate=0.01,
-					  reward_decay=0.9,
-					  e_greedy=0.9,
-					  replace_target_iter=200,
-					  memory_size=2000,
-					  # output_graph=True
-					  )
-	playerB = RandomPlayer(numActions-1)
-	for episode in range(N_EPISODES):
-		# initial observation
-		observation = env.reset()
-		if(episode % 500 == 0):
-			print(str(float(episode) / N_EPISODES * 100) + "%")
-		while True:
-			# RL choose action based on observation
-			# print(observation)
-			actionA = playerA.choose_action(np.array(observation))
-			actionB = playerB.choose_action(str(observation))
-			# RL take action and get next observation and reward
-			observation_, reward, done = env.step(actionA, actionB)
-			total_a += reward
-			playerA.store_transition(observation, actionA, reward, observation_)
-
-			if (step > 200) and (step % 5 == 0):
-				playerA.learn()
-
-			# swap observation
-			observation = observation_
-
-			# break while loop when end of this episode
-			if done:
-				break
-			step += 1
-		reward_a[episode] = total_a
-	plt.plot(reward_a)
-	plt.ylabel('Cummulative reward')
-	plt.xlabel('Episode')
-	plt.show()
-
-	# end of game
-	print('game over')
 
 def ql_vs_minmax(visualise):
 	print("ql vs minmax ql")
@@ -262,37 +196,6 @@ def ql_vs_minmax(visualise):
 					vis.reset()
 				break
 	return (ql_wins, minmax_wins)
-
-
-def test_cartpole():
-
-	bins = np.zeros((4,10))
-	bins[0] = np.linspace(-4.8,4.8,10)
-	bins[1] = np.linspace(-5,5,10)
-	bins[2] = np.linspace(-.418,.418,10)
-	bins[3] = np.linspace(-5,5,10)
-
-	iterations = 2000
-	env = gym.make('CartPole-v0')
-	playerA = QLearn(actions=list(range(env.action_space.n)), reward_decay=0.9)
-	for i_episode in range(iterations):
-		obs = env.reset()
-		observation = assign_bins(obs, bins)
-
-		if(i_episode % 100 == 0):
-				print(str(float(i_episode) / iterations * 100) + "%")
-		while True:
-			if(i_episode > iterations - 100):
-				env.render()
-			action = playerA.choose_action(str(observation))
-			obs_, reward, done, info = env.step(action)
-			observation_ = assign_bins(obs_, bins)
-			# print(observation_)
-			playerA.learn(str(observation), action, reward, str(observation_), done)
-			observation = observation_
-			if done:
-				# print("Episode finished")
-				break
 
 def test_rps():
 	# P = [[0, -25, 50], [25, 0, -5], [-50, 5, 0]]
